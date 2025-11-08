@@ -10,15 +10,10 @@ public class TritiumCommon {
 
     public static void init() {
         LOG.info("""
-                Loading...
-                
+                Tritium Config Loading...
                 """ +
-                "  ______       _  __   _                 \n" +
-                " /_  __/_____ (_)/ /_ (_)__  __ ____ ___ \n" +
-                "  / /  / ___// // __// // / / // __ `__ \\\n" +
-                " / /  / /   / // /_ / // /_/ // / / / / /\n" +
-                "/_/  /_/   /_/ \\__//_/ \\__,_//_/ /_/ /_/ \n" +
-                "                                         \n" +
-                "Tritium Config Library - Universal Configuration System");
-    }
-}
+                "Tritium Config Library - Universal Configuration System"+
+                " "+ MOD_NAME+" v"+TritiumCommon.class.getPackage().getImplementationVersion()+
+                "                                         \n");
+     }
+ }

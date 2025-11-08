@@ -41,7 +41,15 @@ public class TritiumAutoConfig {
 
         try {
             for (Field field : section.getClass().getDeclaredFields()) {
-                if (!field.isSynthetic() && !java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                field.setAccessible(true);
+                if (field.isSynthetic()) continue;
+                // Non-subcategory field (static or instance) means the section has configurable entries
+                if (!field.isAnnotationPresent(SubCategory.class)) {
+                    return true;
+                }
+                // Subcategory field: check recursively whether it contains configurable fields
+                Object subSection = field.get(section);
+                if (hasConfigurableFields(subSection)) {
                     return true;
                 }
             }
@@ -60,6 +68,7 @@ public class TritiumAutoConfig {
                 .setSavingRunnable(config::save);
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+        boolean createdAnyCategory = false;
 
         try {
             Object configObj = config.get();
@@ -71,16 +80,21 @@ public class TritiumAutoConfig {
                 Object section = sectionField.get(configObj);
                 String sectionName = sectionField.getName();
 
-                if (hasConfigurableFields(section)) {
+                if (section != null && hasConfigurableFields(section)) {
                     ConfigCategory category = builder.getOrCreateCategory(
                             Component.translatable("config." + config.getModId() + ".category." + sectionName)
                     );
-
+                    createdAnyCategory = true;
                     generateSectionEntries(entryBuilder, category, section, sectionName);
                 }
             }
         } catch (Exception e) {
             TritiumCommon.LOG.error("Failed to generate config screen for mod: {}", config.getModId(), e);
+        }
+
+        // Ensure at least one category exists to satisfy Cloth Config v15 requirements
+        if (!createdAnyCategory) {
+            builder.getOrCreateCategory(Component.translatable("config." + config.getModId() + ".category.general"));
         }
 
         return builder.build();
