@@ -96,7 +96,6 @@ public class ConfigValidator {
             Method validationMethod = config.getClass().getMethod("validateConfig");
             validationMethod.invoke(config);
         } catch (NoSuchMethodException e) {
-            // Custom validation not implemented, skip
         } catch (Exception e) {
             throw new RuntimeException("Custom validation failed: " + e.getMessage(), e);
         }

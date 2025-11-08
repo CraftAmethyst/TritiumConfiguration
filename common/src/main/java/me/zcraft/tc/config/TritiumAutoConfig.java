@@ -43,7 +43,7 @@ public class TritiumAutoConfig {
             for (Field field : section.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 if (field.isSynthetic()) continue;
-                // Non-subcategory field (static or instance) means the section has configurable entries
+                // Non-subcategory f the section has configurable entries
                 if (!field.isAnnotationPresent(SubCategory.class)) {
                     return true;
                 }
@@ -171,8 +171,9 @@ public class TritiumAutoConfig {
 
                 String fieldName = field.getName();
                 Object currentValue = field.get(section);
-                String fullPath = path + "." + fieldName;
-                String translationKey = "config." + config.getModId() + "." + sectionName + "." + fullPath.replace('.', '_');
+                String fullPath = path.isEmpty() ? fieldName : path + "." + fieldName;
+                //分点格式这一块（
+                String translationKey = "config." + config.getModId() + "." + sectionName + "." + fullPath;
 
                 if (field.isAnnotationPresent(SubCategory.class)) {
                     SubCategory subCat = field.getAnnotation(SubCategory.class);
@@ -180,7 +181,8 @@ public class TritiumAutoConfig {
                     generateSubCategoryEntries(entryBuilder, nestedSubCategoryBuilder, currentValue, sectionName, fullPath);
                     subCategoryBuilder.add(nestedSubCategoryBuilder.build());
                 } else {
-                    FieldAccessor accessor = fieldAccessors.get(fullPath);
+                    String accessorPath = sectionName + "." + fullPath;
+                    FieldAccessor accessor = fieldAccessors.get(accessorPath);
                     if (accessor != null) {
                         generateSubCategoryFieldEntry(entryBuilder, subCategoryBuilder, accessor, currentValue, translationKey, fullPath);
                     }

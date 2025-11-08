@@ -1,5 +1,5 @@
 {
-  "config.tritium_configuration.title": "Tritium 配置",
+  "config.tritium_configuration.title": "Tritium 配置示例",
   "config.tritium_configuration.category.example": "示例",
   "config.tritium_configuration.category.exampleClient": "示例客户端",
   "config.tritium_configuration.example.expl": "示例布尔值",

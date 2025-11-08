@@ -1,5 +1,5 @@
 {
-  "config.tritium_configuration.title": "Tritium Configuration",
+  "config.tritium_configuration.title": "Tritium Configuration(Example Config)",
   "config.tritium_configuration.category.example": "Example",
   "config.tritium_configuration.category.exampleClient": "Example Client",
   "config.tritium_configuration.example.expl": "Example Boolean",
