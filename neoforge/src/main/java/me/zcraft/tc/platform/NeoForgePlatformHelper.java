@@ -1,10 +1,11 @@
 package me.zcraft.tc.platform;
 
+import me.zcraft.tc.TritiumCommon;
 import me.zcraft.tc.platform.services.IPlatformHelper;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
-public abstract class NeoForgePlatformHelper implements IPlatformHelper {
+public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public String getPlatformName() {
@@ -19,5 +20,12 @@ public abstract class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public String getModVersion() {
+        return ModList.get().getModContainerById(TritiumCommon.MOD_ID)
+                .map(container -> container.getModInfo().getVersion().toString())
+                .orElse("unknown");
     }
 }

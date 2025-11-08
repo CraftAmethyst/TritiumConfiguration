@@ -1,5 +1,6 @@
 package me.zcraft.tc.platform;
 
+import me.zcraft.tc.TritiumCommon;
 import me.zcraft.tc.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -22,7 +23,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public String getModVersion() {
-        return FabricLoader.getInstance().getModContainer("tritium")
+        return FabricLoader.getInstance().getModContainer(TritiumCommon.MOD_ID)
                 .map(container -> container.getMetadata().getVersion().getFriendlyString())
                 .orElse("unknown");
     }
