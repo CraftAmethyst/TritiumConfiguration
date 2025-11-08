@@ -17,6 +17,9 @@
   "entrypoints": {
     "main": [
       "me.zcraft.tc.TC"
+    ],
+    "modmenu": [
+      "me.zcraft.tc.client.TritiumConfigScreenReg"
     ]
   },
   "depends": {
