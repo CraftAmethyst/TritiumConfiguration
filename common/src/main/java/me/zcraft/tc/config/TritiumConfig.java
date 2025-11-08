@@ -40,7 +40,7 @@ public class TritiumConfig {
         this.configClass = configClass;
         this.configFileName = modId + "_config";
 
-        // 自动检测客户端环境
+        // 检测客户端
         this.isClient = detectClientEnvironment();
 
         validateModIdOwnership(modId);
@@ -57,8 +57,6 @@ public class TritiumConfig {
         config.register();
         CONFIG_REGISTRY.put(modId, config);
 
-        // 移除对平台特定类的调用
-        // TritiumConfigScreenReg.onConfigRegistered(modId, config);
 
         return config;
     }
@@ -71,7 +69,6 @@ public class TritiumConfig {
         return config;
     }
 
-    // 添加获取所有已注册配置的方法，供平台模块使用
     public static Map<String, TritiumConfig> getAllConfigs() {
         return new ConcurrentHashMap<>(CONFIG_REGISTRY);
     }
@@ -137,7 +134,7 @@ public class TritiumConfig {
 
     private boolean detectClientEnvironment() {
         try {
-            // 尝试加载客户端类来检测环境
+            // 神秘验证
             Class.forName("net.minecraft.client.Minecraft");
             return true;
         } catch (ClassNotFoundException e) {
@@ -178,7 +175,6 @@ public class TritiumConfig {
         registered = true;
 
         try {
-            // 重建配置对象并验证
             Object newConfig = rebuildConfigObject();
             configRef.set(newConfig);
 
@@ -298,7 +294,7 @@ public class TritiumConfig {
             field.setAccessible(true);
             String fullPath = prefix.isEmpty() ? field.getName() : prefix + "." + field.getName();
 
-            // 如果是客户端专用配置且在服务端环境，跳过
+            // ？
             if (field.isAnnotationPresent(ClientOnly.class) && !isClient) {
                 continue;
             }
@@ -328,8 +324,7 @@ public class TritiumConfig {
     private void configureObjectRecursive(Object obj, String prefix) throws Exception {
         for (Field field : obj.getClass().getDeclaredFields()) {
             field.setAccessible(true);
-
-            // 客户端专用配置在服务端环境中跳过
+            //跳过客户端专属
             if (field.isAnnotationPresent(ClientOnly.class) && !isClient) {
                 continue;
             }
@@ -414,8 +409,6 @@ public class TritiumConfig {
             Object configObj = configRef.get();
             for (Field sectionField : configClass.getDeclaredFields()) {
                 sectionField.setAccessible(true);
-
-                // 客户端专用配置在服务端环境中跳过
                 if (sectionField.isAnnotationPresent(ClientOnly.class) && !isClient) {
                     continue;
                 }
@@ -437,7 +430,7 @@ public class TritiumConfig {
         for (Field field : section.getClass().getDeclaredFields()) {
             field.setAccessible(true);
 
-            // 客户端专用配置在服务端环境中跳过
+            // 跳过客户端专属配置项
             if (field.isAnnotationPresent(ClientOnly.class) && !isClient) {
                 continue;
             }
@@ -544,16 +537,11 @@ public class TritiumConfig {
         @Override
         public void setValue(Object obj, Object value) throws Exception {
             try {
-                // 将值转换为正确的类型
                 Object convertedValue = convertValue(value, type);
-
-                // 正确的静态字段判断
                 int parameterCount = setter.type().parameterCount();
                 if (parameterCount == 1) {
-                    // 静态字段：setter 只需要一个参数（值）
                     setter.invoke(convertedValue);
                 } else if (parameterCount == 2) {
-                    // 实例字段：setter 需要两个参数（对象实例和值）
                     setter.invoke(obj, convertedValue);
                 } else {
                     throw new RuntimeException("Unexpected setter parameter count: " + parameterCount);
@@ -563,11 +551,8 @@ public class TritiumConfig {
             }
         }
 
-        // 添加类型转换方法
         private Object convertValue(Object value, Class<?> targetType) {
             if (value == null) return getTypeDefaultValue(targetType);
-
-            // 如果类型已经匹配，直接返回
             if (targetType.isInstance(value)) {
                 return value;
             }
