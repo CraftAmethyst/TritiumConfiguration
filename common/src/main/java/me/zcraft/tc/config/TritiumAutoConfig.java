@@ -172,8 +172,9 @@ public class TritiumAutoConfig {
                 String fieldName = field.getName();
                 Object currentValue = field.get(section);
                 String fullPath = path.isEmpty() ? fieldName : path + "." + fieldName;
-                //分点格式这一块（
-                String translationKey = "config." + config.getModId() + "." + sectionName + "." + fullPath;
+                // 修复：使用正确的路径格式
+                String accessorPath = sectionName + "." + path + "." + fieldName;
+                String translationKey = "config." + config.getModId() + "." + sectionName + "." + fullPath.replace('.', '_');
 
                 if (field.isAnnotationPresent(SubCategory.class)) {
                     SubCategory subCat = field.getAnnotation(SubCategory.class);
@@ -181,10 +182,10 @@ public class TritiumAutoConfig {
                     generateSubCategoryEntries(entryBuilder, nestedSubCategoryBuilder, currentValue, sectionName, fullPath);
                     subCategoryBuilder.add(nestedSubCategoryBuilder.build());
                 } else {
-                    String accessorPath = sectionName + "." + fullPath;
                     FieldAccessor accessor = fieldAccessors.get(accessorPath);
                     if (accessor != null) {
-                        generateSubCategoryFieldEntry(entryBuilder, subCategoryBuilder, accessor, currentValue, translationKey, fullPath);
+                        // 修复：传递正确的 accessorPath 给保存消费者
+                        generateSubCategoryFieldEntry(entryBuilder, subCategoryBuilder, accessor, currentValue, translationKey, accessorPath);
                     }
                 }
             }
@@ -289,7 +290,7 @@ public class TritiumAutoConfig {
                                                FieldAccessor accessor,
                                                Object currentValue,
                                                String translationKey,
-                                               String fullPath) {
+                                               String accessorPath) {  // 修复：参数名改为 accessorPath
         Class<?> fieldType = accessor.getType();
 
         try {
@@ -300,7 +301,7 @@ public class TritiumAutoConfig {
                         )
                         .setDefaultValue((Boolean) accessor.getDefaultValue())
                         .setTooltip(Component.translatable(translationKey + ".tooltip"))
-                        .setSaveConsumer(createSaveConsumer(fullPath))
+                        .setSaveConsumer(createSaveConsumer(accessorPath))  // 修复：使用 accessorPath
                         .build());
 
             } else if (fieldType == int.class || fieldType == Integer.class) {
@@ -310,7 +311,7 @@ public class TritiumAutoConfig {
                         )
                         .setDefaultValue((Integer) accessor.getDefaultValue())
                         .setTooltip(Component.translatable(translationKey + ".tooltip"))
-                        .setSaveConsumer(createSaveConsumer(fullPath));
+                        .setSaveConsumer(createSaveConsumer(accessorPath));  // 修复：使用 accessorPath
 
                 Range range = accessor.getRangeAnnotation();
                 if (range != null) {
@@ -326,7 +327,7 @@ public class TritiumAutoConfig {
                         )
                         .setDefaultValue((Double) accessor.getDefaultValue())
                         .setTooltip(Component.translatable(translationKey + ".tooltip"))
-                        .setSaveConsumer(createSaveConsumer(fullPath));
+                        .setSaveConsumer(createSaveConsumer(accessorPath));  // 修复：使用 accessorPath
 
                 Range range = accessor.getRangeAnnotation();
                 if (range != null) {
@@ -342,7 +343,7 @@ public class TritiumAutoConfig {
                         )
                         .setDefaultValue((String) accessor.getDefaultValue())
                         .setTooltip(Component.translatable(translationKey + ".tooltip"))
-                        .setSaveConsumer(createSaveConsumer(fullPath))
+                        .setSaveConsumer(createSaveConsumer(accessorPath))  // 修复：使用 accessorPath
                         .build());
 
             } else if (List.class.isAssignableFrom(fieldType)) {
@@ -354,7 +355,7 @@ public class TritiumAutoConfig {
                         )
                         .setDefaultValue((List<String>) accessor.getDefaultValue())
                         .setTooltip(Component.translatable(translationKey + ".tooltip"))
-                        .setSaveConsumer(createSaveConsumer(fullPath))
+                        .setSaveConsumer(createSaveConsumer(accessorPath))  // 修复：使用 accessorPath
                         .build());
 
             } else if (fieldType.isEnum()) {
@@ -365,11 +366,11 @@ public class TritiumAutoConfig {
                         )
                         .setDefaultValue((Enum) accessor.getDefaultValue())
                         .setTooltip(Component.translatable(translationKey + ".tooltip"))
-                        .setSaveConsumer(createSaveConsumer(fullPath))
+                        .setSaveConsumer(createSaveConsumer(accessorPath))  // 修复：使用 accessorPath
                         .build());
             }
         } catch (Exception e) {
-            TritiumCommon.LOG.error("Failed to generate subcategory field entry: {}", fullPath, e);
+            TritiumCommon.LOG.error("Failed to generate subcategory field entry: {}", accessorPath, e);
         }
     }
 
@@ -383,12 +384,18 @@ public class TritiumAutoConfig {
             if (pathParts.length < 2) return;
 
             FieldAccessor accessor = fieldAccessors.get(fullPath);
-            if (accessor == null) return;
+            if (accessor == null) {
+                TritiumCommon.LOG.warn("No field accessor found for path: {}", fullPath);
+                return;
+            }
 
             Object currentObj = config.get();
             for (int i = 0; i < pathParts.length - 1; i++) {
                 Field field = findField(currentObj.getClass(), pathParts[i]);
-                if (field == null) return;
+                if (field == null) {
+                    TritiumCommon.LOG.warn("Field not found: {} in path: {}", pathParts[i], fullPath);
+                    return;
+                }
 
                 field.setAccessible(true);
                 Object nextObj = field.get(currentObj);

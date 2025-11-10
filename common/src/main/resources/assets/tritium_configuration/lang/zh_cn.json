@@ -5,8 +5,8 @@
   "config.tritium_configuration.example.expl": "示例布尔值",
   "config.tritium_configuration.example.expl.tooltip": "一个示例布尔值设置",
   "config.tritium_configuration.exampleClient.examplebt": "示例客户端子类别",
-  "config.tritium_configuration.exampleClient.examplebt.exampleint": "示例整数",
-  "config.tritium_configuration.exampleClient.examplebt.exampleint.tooltip": "一个示例整数设置，范围 [1, 256]",
-  "config.tritium_configuration.exampleClient.examplebt.examplelist": "示例列表",
-  "config.tritium_configuration.exampleClient.examplebt.examplelist.tooltip": "一个实体ID的示例列表"
+  "config.tritium_configuration.exampleClient.examplebt_exampleint": "示例整数",
+  "config.tritium_configuration.exampleClient.examplebt_exampleint.tooltip": "一个示例整数设置，范围 [1, 256]",
+  "config.tritium_configuration.exampleClient.examplebt_examplelist": "示例列表",
+  "config.tritium_configuration.exampleClient.examplebt_examplelist.tooltip": "一个实体ID的示例列表"
 }

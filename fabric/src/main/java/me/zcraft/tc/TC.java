@@ -9,6 +9,7 @@ public class TC implements ModInitializer {
     public void onInitialize() {
         TritiumCommon.init();
         TritiumConfig.register(TritiumCommon.MOD_ID, ExampleConfigClass.class);
+        // TritiumConfig.register(TritiumCommon.MOD_ID, ExampleConfigClass.class).filename("tc")
         TritiumConfigScreenReg.registerConfigScreen();
     }
 }

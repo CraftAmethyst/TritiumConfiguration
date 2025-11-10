@@ -5,8 +5,8 @@
   "config.tritium_configuration.example.expl": "Example Boolean",
   "config.tritium_configuration.example.expl.tooltip": "An example boolean setting",
   "config.tritium_configuration.exampleClient.examplebt": "Example Client Subcategory",
-  "config.tritium_configuration.exampleClient.examplebt.exampleint": "Example Integer",
-  "config.tritium_configuration.exampleClient.examplebt.exampleint.tooltip": "An example integer setting with range [1, 256]",
-  "config.tritium_configuration.exampleClient.examplebt.examplelist": "Example List",
-  "config.tritium_configuration.exampleClient.examplebt.examplelist.tooltip": "An example list of entity IDs"
+  "config.tritium_configuration.exampleClient.examplebt_exampleint": "Example Integer",
+  "config.tritium_configuration.exampleClient.examplebt_exampleint.tooltip": "An example integer setting with range [1, 256]",
+  "config.tritium_configuration.exampleClient.examplebt_examplelist": "Example List",
+  "config.tritium_configuration.exampleClient.examplebt_examplelist.tooltip": "An example list of entity IDs"
 }
