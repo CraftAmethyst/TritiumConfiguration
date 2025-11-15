@@ -24,12 +24,11 @@
   },
   "depends": {
     "fabricloader": "*",
-    "modmenu": "*",
     "fabric-api": "*",
     "minecraft": ">=1.21",
     "java": ">=${java_version}"
   },
   "suggests": {
-    "another-mod": "*"
+    "modmenu": "*"
   }
 }
