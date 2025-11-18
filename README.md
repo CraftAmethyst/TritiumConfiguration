@@ -4,7 +4,7 @@
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21-green.svg)](https://www.minecraft.net/)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](http://caorg.abreeze.icu/)
 
-A powerful and flexible configuration API for Minecraft mods, supporting both **Fabric** and **NeoForge** platforms with automatic UI generation and internationalization (i18n) support.
+A powerful and flexible configuration API for Minecraft mods, supporting both **Fabric**/**Forge** and **NeoForge** platforms with automatic UI generation and internationalization (i18n) support.
 
 ## Features
 
